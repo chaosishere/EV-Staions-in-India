@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div id="map" style="height: 800px; width:1000px"></div>
+
+{{stations|json_script:"stations_json"}}
+
+<script>
+    var map = L.map('map').setView([18.516726, 73.856255], 12);
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        minZoom :9,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    let stations = JSON.parse(document.getElementById('stations_json').textContent);
+    
+    // for eact station add a marker
+    stations.forEach(station => {
+        L.marker([station.latitude, station.longitude]).addTo(map)
+
+    });
+
+
+    map.on('click',(event) =>{
+        let lat = event.latlng.lat;
+        let long = event.latlng.lng;
+
+        L.marker([lat, long]).addTo(map)
+        fetch('/get-nearest-station?latitude='+lat+'&longitude='+long).then(response => response.json()).then(result => {
+            
+            station_cordinates = result.cordiantes
+
+            user_cordinates = [lat, long]
+            
+
+            let polyline = L.polyline([user_cordinates, station_cordinates]).addTo(map);
+            
+            var popup = L.popup()
+            .setLatLng([lat,long])
+            .setContent('<p>Nearest station is '+ result.distance + ' kms away</p>')
+            .openOn(map);
+
+        })
+
+
+        
+    })
+
+</script>
+
+
+
+
+{% endblock %}

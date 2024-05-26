@@ -28,8 +28,8 @@ def nearest_station(request):
     station_coordinates = stations_distances[minimum_distance]
 
     route = get_route(user_location, station_coordinates)
-    print(ORS_API_KEY)
-    # print(route)
+
+    print(route)
     decoded_polyline = polyline.decode(route['routes'][0]['geometry'])
 
     context = {

@@ -3,5 +3,5 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('get-nearest-station', views.nearest_stations, name='get_nearest_stations')
+    path('get-nearest-station', views.nearest_station, name='get_nearest_stations')
 ]

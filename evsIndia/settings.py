@@ -11,6 +11,12 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,8 +32,11 @@ SECRET_KEY = 'django-insecure-in&k1yg@nh0oatk1q(cjf33$&(lq4h3(arwne-!5!$=_u))ed-
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '0717-106-195-7-160.ngrok-free.app'
+
 ]
+
+ORS_API_KEY = os.getenv('ORS_API_KEY')
+
 
 
 # Application definition

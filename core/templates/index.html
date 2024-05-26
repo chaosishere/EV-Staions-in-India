@@ -2,56 +2,48 @@
 
 {% block content %}
 
-<div id="map" style="height: 800px; width:1000px"></div>
+<div id="map" style="height: 800px; width: 100%;"></div>
 
-{{stations|json_script:"stations_json"}}
+{{ stations|json_script:"stations_json" }}
 
 <script>
     var map = L.map('map').setView([18.516726, 73.856255], 12);
 
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
-        minZoom :9,
+        minZoom: 6,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
     let stations = JSON.parse(document.getElementById('stations_json').textContent);
     
-    // for eact station add a marker
     stations.forEach(station => {
-        L.marker([station.latitude, station.longitude]).addTo(map)
-
+        L.marker([station.latitude, station.longitude]).addTo(map);
     });
 
-
-    map.on('click',(event) =>{
+    map.on('click', (event) => {
         let lat = event.latlng.lat;
-        let long = event.latlng.lng;
+        let lng = event.latlng.lng;
 
-        L.marker([lat, long]).addTo(map)
-        fetch('/get-nearest-station?latitude='+lat+'&longitude='+long).then(response => response.json()).then(result => {
-            
-            station_cordinates = result.cordiantes
+        L.marker([lat, lng]).addTo(map);
+        fetch('/get-nearest-station?latitude=' + lat + '&longitude=' + lng)
+            .then(response => response.json())
+            .then(result => {
+                let station_coordinates = result.coordinates;
+                let user_coordinates = [lat, lng];
 
-            user_cordinates = [lat, long]
-            
+                // Ensure the route is processed correctly
+                if (result.route && result.route.length > 0) {
+                    let routeCoordinates = result.route;
+                    L.polyline(routeCoordinates, {color: 'blue'}).addTo(map);
+                }
 
-            let polyline = L.polyline([user_cordinates, station_cordinates]).addTo(map);
-            
-            var popup = L.popup()
-            .setLatLng([lat,long])
-            .setContent('<p>Nearest station is '+ result.distance + ' kms away</p>')
-            .openOn(map);
-
-        })
-
-
-        
-    })
-
+                var popup = L.popup()
+                    .setLatLng([lat, lng])
+                    .setContent('<p>Nearest station is ' + result.distance + ' km away</p>')
+                    .openOn(map);
+            });
+    });
 </script>
-
-
-
 
 {% endblock %}

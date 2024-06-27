@@ -1,0 +1,1 @@
+web: gunicorn evsIndia.wsgi --log-file -

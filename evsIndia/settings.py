@@ -32,8 +32,17 @@ SECRET_KEY = 'django-insecure-in&k1yg@nh0oatk1q(cjf33$&(lq4h3(arwne-!5!$=_u))ed-
 DEBUG = False
 
 ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'ev-staions-in-india-production.up.railway.app'
+
 
 ]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://ev-staions-in-india-production.up.railway.app'
+]
+
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
